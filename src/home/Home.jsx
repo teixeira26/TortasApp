@@ -19,7 +19,7 @@ const Home =  ()=>{
         if(disenar === true) setDisenar(false)
         for(let n = 0; n<numeroDeBases; n++){
             console.log(bases)
-            arrayTemporal = [...arrayTemporal,  {alto:null, ancho:null}] 
+            arrayTemporal = [...arrayTemporal,  {alto:null, ancho:null, img:false}] 
         }
         setBase(arrayTemporal)
     }
@@ -34,6 +34,29 @@ const Home =  ()=>{
     const disenarBases = (e)=>{
         e.preventDefault();
         setDisenar(true);
+    }
+
+    const cargarFotoPromesa = (reader, y)=>{
+        return new Promise((resolve, reject)=>{
+            setTimeout(()=>{
+                // console.log(reader.result)
+                // console.log(bases)
+                let foto = reader.result
+                // console.log(bases, arrayTemporal);
+                resolve(foto);
+            },2000)
+        })
+    }
+
+    const cargarFoto= async(e,y)=>{
+        console.log(e.target.parentNode,y)
+        const reader = new FileReader();
+        reader.readAsDataURL(e.target.files[0]);
+        const foto = await cargarFotoPromesa(reader, y);
+        //console.log('ijisdjjdi', foto);
+        e.target.parentNode.style.background = `url(${foto})`;
+        e.target.parentNode.style.backgroundSize = 'contain';
+        // e.target.parentNode.style.backgroundRepeat = 'no-repeat';
     }
    
    
@@ -64,7 +87,8 @@ const Home =  ()=>{
            {disenar&&bases.map((x,y)=>{
             return(
                 <div key={y} style={{width:x.ancho, height:x.alto, border:'1px solid black'}}>
-                    <input type="file" name="" id="" />
+                    <input type="file" name={y} onChange={async(e)=>await cargarFoto(e, y)} />
+                    {/* {y.img&&<img src={y.img}/>} */}
                 </div>
             )
            })}
